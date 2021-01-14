@@ -5,18 +5,13 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
-f = open("../../info.txt", "r")
-secret1 = f.readline().strip()
-secret2 = f.readline().strip()
-f.close()
-
-class ClockIn:
+class Clock:
   def __init__(self, email, password):
     self.email = email
     self.password = password
 
-  def run(self):
-    PATH = "../../chromedriver.exe"
+  def run(self, action):
+    PATH = "../chromedriver"
     driver = webdriver.Chrome(PATH)
 
     driver.get("https://megapayusa.myfileguardian.com/PostOffice/Main.aspx")
@@ -32,8 +27,8 @@ class ClockIn:
     driver.find_element_by_id("ctl00_ctl00_holderMain_holderMain_btnSignIn").click()
     
     WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.CLASS_NAME, "hub-master")))
-    driver.switch_to.frame(driver.find_element_by_id("ifrWebClock"))
-    WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID,"ClockIn"))).click()
-
-clockin = ClockIn(secret1, secret2)
-clockin.run()
+    if action == "hubTime":
+      WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, action))).click()
+    else:
+      driver.switch_to.frame(driver.find_element_by_id("ifrWebClock"))
+      WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, action))).click()
